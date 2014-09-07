@@ -41,9 +41,15 @@ train_X_df <- data.frame(train_X_matrix)
 names(test_X_df) <- featureList_names
 names(train_X_df) <- featureList_names
 
-## Remove the raw data variables and matrices to conserve space and to declutter
+## Merge the to data frames into one
 
-rm(test_X_raw); rm(train_X_raw); rm(test_X_matrix); rm(train_X_matrix); rm(featureList_raw)
+merged_set <- rbind(test_X_df, train_X_df)
+
+## Remove the unneeded data to conserve space and to declutter
+
+rm(test_X_raw); rm(train_X_raw); rm(featureList_raw)
+rm(test_X_matrix); rm(train_X_matrix)
+rm(test_X_df); rm(train_X_df)
 
 ## Final cleanup to declutter the work space
 
