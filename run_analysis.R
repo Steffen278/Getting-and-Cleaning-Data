@@ -1,5 +1,10 @@
 ## Raw prototype for reading in the data
 
+## Loading libraries which we are going to use
+
+library(plyr)
+library(tidyr)
+
 ######################################################
 # Step 1: Reading the data and merging the data sets #
 ######################################################
@@ -108,6 +113,34 @@ merged_set <- cbind(activity_labels, merged_set)
 
 merged_set <- cbind(subject_number, merged_set)
 
+
+##################################
+# Interlude: Tidying up the data #
+##################################
+
+## To tidy up the data we want to create one column for the different measurement variables, and one for the measurement values
+## Before we can use the gather_() function from the tidyr package to do this, we have to change the column names, since gather_() seems to
+## have problems with some of the characters used in the variable names
+
+## Convert to all lower cases
+
+names(merged_set) <- tolower(names(merged_set))
+
+## Replace the dash with an underscore
+
+names(merged_set) <- gsub("-", "_", names(merged_set))
+
+## Loose the (). Note the \\ to escape the (), which is a legal regular expression
+
+names(merged_set) <- gsub("\\()", "", names(merged_set))
+
+## Melt the combined data set using gather_() on all but the subject_number and activity columns
+## We use gather_() instead of gather(), as it allows us to use a character to string to define the variables we want to gather,
+## thus allowing us to be independent of the actual names and preventing typing errors.
+## We know that the first two columns are the subject number and the activty description, so we can gather all other values up to the last
+## column
+
+merged_set <- gather_(merged_set, "measurement_type", "measurement_value", c(names(merged_set)[3:length(names(merged_set))]))
 
 #############################################
 # Step 4: Adding descriptive variable names #
