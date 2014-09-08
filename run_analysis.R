@@ -17,6 +17,7 @@ testSubjectFile <- "UCI HAR Dataset/test/subject_test.txt"
 trainSubjectFile <- "UCI HAR Dataset/train/subject_train.txt"
 testActivityFile <- "UCI HAR Dataset/test/y_test.txt"
 trainActivityFile <- "UCI HAR Dataset/train/y_train.txt"
+activityLabelsFile <- "UCI HAR Dataset/activity_labels.txt"
 
 ## Feature List is used to calculate the number of rows for the two data sets
 featureListFile <- "UCI HAR Dataset/features.txt"
@@ -25,10 +26,11 @@ featureListFile <- "UCI HAR Dataset/features.txt"
 
 test_X_raw <- scan(testFile, what=character())
 train_X_raw <- scan(trainFile, what=character())
-subject_test <- scan(testSubjectFile)
-subject_train <- scan(trainSubjectFile)
-activity_test <- scan(testActivityFile)
-activity_train <- scan(trainActivityFile)
+subject_test_number <- scan(testSubjectFile)
+subject_train_number <- scan(trainSubjectFile)
+activity_test_number <- scan(testActivityFile, what=character())
+activity_train_number <- scan(trainActivityFile, what=character())
+activityLabels <- scan(activityLabelsFile, what=character())
 
 featureList_raw <- scan(featureListFile, what=character())
 
@@ -59,15 +61,15 @@ merged_set <- rbind(test_X_df, train_X_df)
 
 ## Create one vector of subject information and activity information
 
-subject <- c(subject_test, subject_train)
-activity <- c(activity_test, activity_train)
+subject_number <- c(subject_test_number, subject_train_number)
+activity_number <- c(activity_test_number, activity_train_number)
 
 ## Remove the unneeded data to conserve space and to declutter
 
 rm(test_X_raw); rm(train_X_raw); rm(featureList_raw)
 rm(test_X_matrix); rm(train_X_matrix)
 rm(test_X_df); rm(train_X_df)
-rm(subject_test); rm(subject_train)
+
 
 ##################################################################
 # Step 2: Extracting the mean and standard deviation measurments #
@@ -86,12 +88,28 @@ index <- append(index, grep("std", names(merged_set)))
 
 merged_set <- merged_set[,index]
 
-## Bind the subject information and activity information to the data frame
 
-merged_set <- cbind(activity, merged_set)
-merged_set <- cbind(subject, merged_set)
+###############################################################
+# Step 3: Replace the activity numbers with descriptive names #
+###############################################################
+
+## Creating a vector of descriptive activity labels
+## This is facilitated by an anonymous function, which compares the activity number from the data set with the activity number in the
+## activity labels file and returns its index. Since the structure of the activity labels file is "activity #" "activity description",
+## the index has to be incremented by one to return the activity label
+
+activity_labels <- sapply(activity_number, function(x) {activityLabels[grep(x, activityLabels)+1]})
+
+## Bind the activity labels vector to the combinded data  frame
+
+merged_set <- cbind(activity_labels, merged_set)
+
+## Bind the subject information to the combinded data frame
+
+merged_set <- cbind(subject_number, merged_set)
 
 ## Final cleanup to declutter the work space
 
 rm(testFile); rm(trainFile); rm(testSubjectFile); rm(trainSubjectFile); rm(featureListFile); rm(testActivityFile); rm(trainActivityFile)
-rm(featureList_names); rm(index); rm(subject); rm(activity); rm(activity_test); rm(activity_train)
+rm(featureList_names); rm(index); rm(subject_number); rm(activity_number); rm(activity_test_number); rm(activity_train_number)
+rm(subject_test_number); rm(subject_train_number); rm(activityLabelsFile); rm(activity_labels); rm(activityLabels)
