@@ -31,11 +31,11 @@ featureListFile <- "UCI HAR Dataset/features.txt"
 
 test_X_raw <- scan(testFile, what=numeric())
 train_X_raw <- scan(trainFile, what=numeric())
-subject_test_number <- scan(testSubjectFile)
-subject_train_number <- scan(trainSubjectFile)
-activity_test_number <- scan(testActivityFile, what=character())
-activity_train_number <- scan(trainActivityFile, what=character())
-activityLabels <- scan(activityLabelsFile, what=character())
+subject_test_id <- scan(testSubjectFile)
+subject_train_id <- scan(trainSubjectFile)
+activity_test_id <- scan(testActivityFile, what=character())
+activity_train_id <- scan(trainActivityFile, what=character())
+activityLabels_raw <- scan(activityLabelsFile, what=character())
 
 featureList_raw <- scan(featureListFile, what=character())
 
@@ -66,8 +66,8 @@ merged_set <- rbind(test_X_df, train_X_df)
 
 ## Create one vector of subject information and activity information
 
-subject_number <- c(subject_test_number, subject_train_number)
-activity_number <- c(activity_test_number, activity_train_number)
+subject_id <- c(subject_test_id, subject_train_id)
+activity_id <- c(activity_test_id, activity_train_id)
 
 ## Remove the unneeded data to conserve space and to declutter
 
@@ -94,16 +94,17 @@ index <- append(index, grep("std", names(merged_set)))
 merged_set <- merged_set[,index]
 
 
-###############################################################
-# Step 3: Replace the activity numbers with descriptive names #
-###############################################################
+###########################################################
+# Step 3: Replace the activity ids with descriptive names #
+###########################################################
 
 ## Creating a vector of descriptive activity labels
-## This is facilitated by an anonymous function, which compares the activity number from the data set with the activity number in the
+## This is facilitated by an anonymous function, which compares the activity id from the data set with the activity id in the
 ## activity labels file and returns its index. Since the structure of the activity labels file is "activity #" "activity description",
 ## the index has to be incremented by one to return the activity label
+## Also, in the same step, in the sense of continuity, we convert the activity labes to lower case
 
-activity_labels <- sapply(activity_number, function(x) {activityLabels[grep(x, activityLabels)+1]})
+activity_labels <- sapply(activity_id, function(x) {tolower(activityLabels_raw[grep(x, activityLabels_raw)+1])})
 
 ## Bind the activity labels vector to the combinded data  frame
 
@@ -111,7 +112,7 @@ merged_set <- cbind(activity_labels, merged_set)
 
 ## Bind the subject information to the combinded data frame
 
-merged_set <- cbind(subject_number, merged_set)
+merged_set <- cbind(subject_id, merged_set)
 
 
 ##################################
@@ -134,13 +135,18 @@ names(merged_set) <- gsub("-", "_", names(merged_set))
 
 names(merged_set) <- gsub("\\()", "", names(merged_set))
 
-## Melt the combined data set using gather_() on all but the subject_number and activity columns
+## Melt the combined data set using gather_() on all but the subject_id and activity columns
 ## We use gather_() instead of gather(), as it allows us to use a character to string to define the variables we want to gather,
 ## thus allowing us to be independent of the actual names and preventing typing errors.
-## We know that the first two columns are the subject number and the activty description, so we can gather all other values up to the last
+## We know that the first two columns are the subject id and the activty description, so we can gather all other values up to the last
 ## column
 
 merged_set <- gather_(merged_set, "measurement_type", "measurement_value", c(names(merged_set)[3:length(names(merged_set))]))
+
+## Now that we have the data tidied up we can sort it in a meaningful way, first by subject_id and then by the activity label
+
+merged_set <- arrange(merged_set, subject_id, activity_labels
+                      )
 
 #############################################
 # Step 4: Adding descriptive variable names #
@@ -152,6 +158,6 @@ merged_set <- gather_(merged_set, "measurement_type", "measurement_value", c(nam
 
 rm(testFile); rm(trainFile); rm(testSubjectFile); rm(trainSubjectFile); rm(featureListFile); rm(testActivityFile); rm(trainActivityFile)
 rm(activityLabelsFile)
-rm(featureList_names); rm(index); rm(subject_number); rm(activity_number); rm(activity_test_number); rm(activity_train_number)
-rm(subject_test_number); rm(subject_train_number)
-rm(activity_labels); rm(activityLabels)
+rm(featureList_names); rm(index); rm(subject_id); rm(activity_id); rm(activity_test_id); rm(activity_train_id)
+rm(subject_test_id); rm(subject_train_id)
+rm(activity_labels); rm(activityLabels_raw)
