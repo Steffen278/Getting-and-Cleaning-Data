@@ -24,8 +24,8 @@ featureListFile <- "UCI HAR Dataset/features.txt"
 
 ## Reading in the raw data
 
-test_X_raw <- scan(testFile, what=character())
-train_X_raw <- scan(trainFile, what=character())
+test_X_raw <- scan(testFile, what=numeric())
+train_X_raw <- scan(trainFile, what=numeric())
 subject_test_number <- scan(testSubjectFile)
 subject_train_number <- scan(trainSubjectFile)
 activity_test_number <- scan(testActivityFile, what=character())
