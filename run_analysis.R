@@ -1,5 +1,9 @@
 ## Raw prototype for reading in the data
 
+######################################################
+# Step 1: Reading the data and merging the data sets #
+######################################################
+
 ## File names are one directory down, then two up as specified below
 
 ## BEFORE SUBMITTING: SKRIPT SHOULD WORK FROM HOME DIR - SO NO PATH!!!!!!
@@ -51,6 +55,23 @@ rm(test_X_raw); rm(train_X_raw); rm(featureList_raw)
 rm(test_X_matrix); rm(train_X_matrix)
 rm(test_X_df); rm(train_X_df)
 
+##################################################################
+# Step 2: Extracting the mean and standard deviation measurments #
+##################################################################
+
+# Finding the columns in the combined data frame which include data about the mean
+
+index <- grep("mean", names(merged_set))
+
+# Add the columns from the combinded data frame which include data about the standard deviation
+
+index <- append(index, grep("std", names(merged_set)))
+
+# Index now contains the columns numbers of the mean and standard deviation measurements, in that order
+# Removing all non relevant columns from the combined data frame
+
+merged_set <- merged_set[,index]
+
 ## Final cleanup to declutter the work space
 
-rm(testFile); rm(trainFile); rm(featureListFile); rm(featureList_names)
+rm(testFile); rm(trainFile); rm(featureListFile); rm(featureList_names); rm(index)
