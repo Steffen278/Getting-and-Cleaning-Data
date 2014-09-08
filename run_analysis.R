@@ -108,8 +108,17 @@ merged_set <- cbind(activity_labels, merged_set)
 
 merged_set <- cbind(subject_number, merged_set)
 
+
+#############################################
+# Step 4: Adding descriptive variable names #
+#############################################
+
+
+
 ## Final cleanup to declutter the work space
 
 rm(testFile); rm(trainFile); rm(testSubjectFile); rm(trainSubjectFile); rm(featureListFile); rm(testActivityFile); rm(trainActivityFile)
+rm(activityLabelsFile)
 rm(featureList_names); rm(index); rm(subject_number); rm(activity_number); rm(activity_test_number); rm(activity_train_number)
-rm(subject_test_number); rm(subject_train_number); rm(activityLabelsFile); rm(activity_labels); rm(activityLabels)
+rm(subject_test_number); rm(subject_train_number)
+rm(activity_labels); rm(activityLabels)
