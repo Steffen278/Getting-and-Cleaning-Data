@@ -115,13 +115,13 @@ merged_set <- cbind(activity_labels, merged_set)
 merged_set <- cbind(subject_id, merged_set)
 
 
-##################################
-# Interlude: Tidying up the data #
-##################################
+#############################################
+# Step 4: Adding descriptive variable names #
+#############################################
 
-## To tidy up the data we want to create one column for the different measurement variables, and one for the measurement values
-## Before we can use the gather_() function from the tidyr package to do this, we have to change the column names, since gather_() seems to
-## have problems with some of the characters used in the variable names
+## Create a temp data set for debugging
+
+debugset <- merged_set
 
 ## Convert to all lower cases
 
@@ -135,6 +135,23 @@ names(merged_set) <- gsub("-", "_", names(merged_set))
 
 names(merged_set) <- gsub("\\()", "", names(merged_set))
 
+## Renaming the variables using the names() and gsub() functions with regular expressions
+
+names(merged_set) <- gsub("^f", "frequency_", names(merged_set))
+names(merged_set) <- gsub("^t", "time_", names(merged_set))
+names(merged_set) <- gsub("body", "Body", names(merged_set))
+names(merged_set) <- gsub("jerk", "Jerk", names(merged_set))
+names(merged_set) <- gsub("gyro", "Gyroscope", names(merged_set))
+names(merged_set) <- gsub("acc", "Acceleration", names(merged_set))
+names(merged_set) <- gsub("mag", "Magnitude", names(merged_set))
+names(merged_set) <- gsub("mean", "Mean", names(merged_set))
+names(merged_set) <- gsub("std", "SD", names(merged_set))
+
+
+##################################
+# Interlude: Tidying up the data #
+##################################
+
 ## Melt the combined data set using gather_() on all but the subject_id and activity columns
 ## We use gather_() instead of gather(), as it allows us to use a character to string to define the variables we want to gather,
 ## thus allowing us to be independent of the actual names and preventing typing errors.
@@ -145,12 +162,7 @@ merged_set <- gather_(merged_set, "measurement_type", "measurement_value", c(nam
 
 ## Now that we have the data tidied up we can sort it in a meaningful way, first by subject_id and then by the activity label
 
-merged_set <- arrange(merged_set, subject_id, activity_labels
-                      )
-
-#############################################
-# Step 4: Adding descriptive variable names #
-#############################################
+merged_set <- arrange(merged_set, subject_id, activity_labels)
 
 
 ##################################################################################################################
