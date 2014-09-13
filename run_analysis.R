@@ -153,6 +153,11 @@ merged_set <- arrange(merged_set, subject_id, activity_labels
 #############################################
 
 
+##################################################################################################################
+# Step 5: Creating a seperate tidy data set with the average of each variable for each activity and each subject #
+##################################################################################################################
+
+tidyset <- ddply(merged_set, .(subject_id, activity_labels, measurement_type), summarise, mean_measurement=mean(measurement_value))
 
 ## Final cleanup to declutter the work space
 
