@@ -10,7 +10,7 @@ Although I usually do not stuff my files like this, I decided to keep all the fu
 
 Usage: tidy_set <- run_analysis(base_path="UCI HAR Dataset", txt.output=FALSE, return.both=FALSE)
 
-The steps of the assignment are performed in the order specified in the assignment description on coursera.org. As the code is extensively commented, I do not describe the function here.
+The steps of the assignment are performed in the order specified in the assignment description on coursera.org. As the code is extensively commented and tells the story of what is done itself (I hope), I do not describe the function here.
 
 Some points to note:
 
