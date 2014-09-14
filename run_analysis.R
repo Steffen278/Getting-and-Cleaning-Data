@@ -1,3 +1,5 @@
+## Steffen278, 14.09.2014
+
 ## Loading libraries which we are going to use
 
 library(plyr)
