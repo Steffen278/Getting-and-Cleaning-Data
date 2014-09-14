@@ -71,7 +71,7 @@ run_analysis <- function(base_path="UCI HAR Dataset", txt.output = FALSE, return
     subject_id <- c(subject_test_id, subject_train_id)
     activity_id <- c(activity_test_id, activity_train_id)
     
-    ## Remove the unneeded data to conserve space and to declutter
+    ## Remove the unneeded data to conserve space
     
     rm(test_X_raw); rm(train_X_raw); rm(featureList_raw)
     rm(test_X_matrix); rm(train_X_matrix)
@@ -187,25 +187,7 @@ run_analysis <- function(base_path="UCI HAR Dataset", txt.output = FALSE, return
     tidy_set <- ddply(merged_set, .(subject_id, activity_labels, measurement_type), summarise, mean_measurement=mean(measurement_value))
     
     
-    print("Cleaning up...")
-    
-    ## Final cleanup to declutter the work space
-    
-    rm(testFile); rm(trainFile); rm(testSubjectFile); rm(trainSubjectFile); rm(featureListFile); rm(testActivityFile); rm(trainActivityFile)
-    rm(activityLabelsFile)
-    rm(featureList_names); rm(index); rm(subject_id); rm(activity_id); rm(activity_test_id); rm(activity_train_id)
-    rm(subject_test_id); rm(subject_train_id)
-    rm(activity_labels); rm(activityLabels_raw)
-    
-    print("...done.")
-    
-    ## Returning the data sets
-    ## This is not beautiful, but the only option I could find to return multiple values from a function without
-    ## using a list
-    ## merged_set <<- merged_set
-    ##tidy_set
-    
-    ## If requested, the tidy set will be written to the file tidy_set.txt in the current directory
+    ## If so requested, the tidy set will be written to the file tidy_set.txt in the current directory
     
     if (txt.output) {
         
@@ -213,6 +195,9 @@ run_analysis <- function(base_path="UCI HAR Dataset", txt.output = FALSE, return
         write.table(tidy_set, file="tidy_set.txt", row.names=FALSE)
         print("...done.")
     }
+    
+    
+    ## If specified, return both data sets
     
     if (return.both) {
         
