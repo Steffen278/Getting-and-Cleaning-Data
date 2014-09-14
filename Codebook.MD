@@ -28,7 +28,7 @@ I performed all steps of the analysis in the order specified by the assignment:
 
 **Step 3:** Using sapply() I exchange all activity ids from the combined data set with their lower case text labels as given by the activity_labels.txt. Using cbind I bind the labels and subject ids to the data set, so that it now has the structure:
 
-subject_id, activity_label, mean and SD variables
+subject_id, activity_labels, mean and SD variables
 
 **Step 4:** I convert the variable names:
 
@@ -49,4 +49,4 @@ Afterwards I rearrange the data by subject id and activity (descriptive label).
 
 **Step 5:** I create a tidy data set which includes the mean value for the measurements for each combination of subject id, activity and variable.
 
-This leaves me with the columns "subject_id", "activity_label", "measurement_type" and "mean_measurement".
+This leaves me with the columns "subject_id", "activity_labels", "measurement_type" and "mean_measurement".
