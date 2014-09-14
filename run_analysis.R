@@ -9,6 +9,8 @@ library(tidyr)
 # Step 1: Reading the data and merging the data sets #
 ######################################################
 
+print("Step 1: Reading the data...")
+
 ## File names are one directory down, then two up as specified below
 
 ## BEFORE SUBMITTING: SKRIPT SHOULD WORK FROM HOME DIR - SO NO PATH!!!!!!
@@ -60,6 +62,8 @@ train_X_df <- data.frame(train_X_matrix)
 names(test_X_df) <- featureList_names
 names(train_X_df) <- featureList_names
 
+print("Step 1: ...merging the data sets.")
+
 ## Merge the to data frames into one
 
 merged_set <- rbind(test_X_df, train_X_df)
@@ -76,9 +80,11 @@ rm(test_X_matrix); rm(train_X_matrix)
 rm(test_X_df); rm(train_X_df)
 
 
-##################################################################
-# Step 2: Extracting the mean and standard deviation measurments #
-##################################################################
+###################################################################
+# Step 2: Extracting the mean and standard deviation measurements #
+###################################################################
+
+print("Step 2: Extracting the mean and standard deviation measurements...")
 
 ## Finding the columns in the combined data frame which include data about the mean
 
@@ -97,6 +103,8 @@ merged_set <- merged_set[,index]
 ###########################################################
 # Step 3: Replace the activity ids with descriptive names #
 ###########################################################
+
+print("Step 3: Replacing the activity ids with descriptive names...")
 
 ## Creating a vector of descriptive activity labels
 ## This is facilitated by an anonymous function, which compares the activity id from the data set with the activity id in the
@@ -119,11 +127,9 @@ merged_set <- cbind(subject_id, merged_set)
 # Step 4: Adding descriptive variable names #
 #############################################
 
-## Create a temp data set for debugging
+print("Step 4: Replacing the variable names with descriptive names...")
 
-debugset <- merged_set
-
-## Convert to all lower cases
+## Convert the column names to all lower cases
 
 names(merged_set) <- tolower(names(merged_set))
 
@@ -140,17 +146,23 @@ names(merged_set) <- gsub("\\()", "", names(merged_set))
 names(merged_set) <- gsub("^f", "frequency_", names(merged_set))
 names(merged_set) <- gsub("^t", "time_", names(merged_set))
 names(merged_set) <- gsub("body", "Body", names(merged_set))
+names(merged_set) <- gsub("BodyBody", "Body", names(merged_set))
 names(merged_set) <- gsub("jerk", "Jerk", names(merged_set))
 names(merged_set) <- gsub("gyro", "Gyroscope", names(merged_set))
 names(merged_set) <- gsub("acc", "Acceleration", names(merged_set))
+names(merged_set) <- gsub("gravity", "Gravity", names(merged_set))
 names(merged_set) <- gsub("mag", "Magnitude", names(merged_set))
 names(merged_set) <- gsub("mean", "Mean", names(merged_set))
 names(merged_set) <- gsub("std", "SD", names(merged_set))
+names(merged_set) <- gsub("Meanfreq", "MeanFrequency", names(merged_set))
+names(merged_set) <- gsub("(_[xyz])$", "\\1-Axis", names(merged_set))
 
 
 ##################################
 # Interlude: Tidying up the data #
 ##################################
+
+print("Tidying up the merged data set...")
 
 ## Melt the combined data set using gather_() on all but the subject_id and activity columns
 ## We use gather_() instead of gather(), as it allows us to use a character to string to define the variables we want to gather,
@@ -169,7 +181,15 @@ merged_set <- arrange(merged_set, subject_id, activity_labels)
 # Step 5: Creating a seperate tidy data set with the average of each variable for each activity and each subject #
 ##################################################################################################################
 
+print("Step 5: Creating a tidy data set with the mean measurements for each subject, activity, measurement type...")
+
+# We use ddply to summarise the data by calculating the mean measurement for each combination of 
+# subject id, type of activity and type of measurement
+
 tidy_set <- ddply(merged_set, .(subject_id, activity_labels, measurement_type), summarise, mean_measurement=mean(measurement_value))
+
+
+print("Cleaning up...")
 
 ## Final cleanup to declutter the work space
 
@@ -178,3 +198,5 @@ rm(activityLabelsFile)
 rm(featureList_names); rm(index); rm(subject_id); rm(activity_id); rm(activity_test_id); rm(activity_train_id)
 rm(subject_test_id); rm(subject_train_id)
 rm(activity_labels); rm(activityLabels_raw)
+
+print("...done.")
